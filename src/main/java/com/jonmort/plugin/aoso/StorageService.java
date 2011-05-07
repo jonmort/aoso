@@ -8,4 +8,5 @@ public interface StorageService {
     Storage get(String scope, String generic, String specific, String dataid);
     Storage create(String scope, String generic, String specific, String dataid, String data);
     void remove(Storage storage);
+    Iterable<Storage> search(String scope, String searchString, int noResults, int offset);
 }

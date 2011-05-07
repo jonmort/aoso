@@ -14,7 +14,7 @@ public interface Storage extends RawEntity<String> {
     @PrimaryKey("identifier")
     @NotNull
     String getIdentifier();
-    void setIdentifier(String scope);
+    void setIdentifier(String identifier);
     String getData();
     void setData(String data);
 }

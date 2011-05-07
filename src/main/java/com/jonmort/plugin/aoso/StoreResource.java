@@ -5,11 +5,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 
-@Path("/{scope}/{generic}/{specific}/{dataid}")
-public class Resource {
+@Path("/store/{scope}/{generic}/{specific}/{dataid}")
+public class StoreResource {
     private final StorageService storageService;
 
-    public Resource(StorageService storageService) {
+    public StoreResource(StorageService storageService) {
         this.storageService = storageService;
     }
 
@@ -21,7 +21,7 @@ public class Resource {
                         @PathParam("dataid") String dataid) {
         Storage storage = storageService.get(scope, generic, specific, dataid);
         if (storage != null) {
-            return Response.ok(storage.getData()).build();
+            return Response.ok(StorageRepresentation.fromStorage(storage)).build();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
     }
@@ -32,8 +32,13 @@ public class Resource {
                         @PathParam("specific") String specific,
                         @PathParam("dataid") String dataid,
                         String data) {
-        storageService.create(scope, generic, specific, dataid, data);
-        final URI location = UriBuilder.fromResource(Resource.class).build(scope, generic, specific, dataid);
+        Storage storage = storageService.get(scope, generic, specific, dataid);
+        if (storage == null) {
+            storageService.create(scope, generic, specific, dataid, data);
+        } else {
+            update(scope, generic, specific, dataid, data);
+        }
+        final URI location = UriBuilder.fromResource(StoreResource.class).build(scope, generic, specific, dataid);
         return Response.created(location).build();
     }
 

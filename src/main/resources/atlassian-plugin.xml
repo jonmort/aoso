@@ -29,4 +29,7 @@
         <entity>com.jonmort.plugin.aoso.Storage</entity>
     </ao>
 
+    <scoped-modules key="modules" location="/modules" />
+
+
 </atlassian-plugin>
