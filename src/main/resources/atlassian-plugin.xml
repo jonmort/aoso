@@ -1,0 +1,32 @@
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+    </plugin-info>
+
+
+    <rest key="rest" path="/aoso" version="1.0">
+        <description>Provides REST resources</description>
+    </rest>
+
+
+    <component-import key="ao" name="Active Objects service"
+                      interface="com.atlassian.activeobjects.external.ActiveObjects">
+        <description>Component to access Active Objects functionality from the plugin</description>
+    </component-import>
+
+    <component-import key="userManager" name="User Manager"
+                      interface="com.atlassian.sal.api.user.UserManager">
+        <description>Component to access the User Manager</description>
+    </component-import>
+
+    <component key="storage-service" name="Storage service" class="com.jonmort.plugin.aoso.StorageServiceImpl" />
+
+
+    <ao key="ao-module">
+        <description>The module configuring the Active Objects service used by this plugin</description>
+        <entity>com.jonmort.plugin.aoso.Storage</entity>
+    </ao>
+
+</atlassian-plugin>
