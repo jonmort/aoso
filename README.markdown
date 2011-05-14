@@ -22,6 +22,8 @@ Usage
 
 See the Common JS speakeasy tab for API documentation.
 
+See https://github.com/jonmort/pomodoro-extension/tree/master/js/pomodoro for an example of how to add optional support for aoso and fallback to localStorage
+
 Development
 -----------
 
