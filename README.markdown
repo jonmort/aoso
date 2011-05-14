@@ -22,17 +22,6 @@ Usage
 
 See the Common JS speakeasy tab for API documentation.
 
-To use AOSO in your plugin the following pattern might be useful to fall back to using localStorage
- when AOSO is not installed
-
-    var storage;
-    try {
-      // this is to fool the module system and load the extension even though the module doesn't exist.
-      storage = require('aoso/' + 'storage');
-    } catch(e) {
-      storage = localStorage;
-    }
-
 Development
 -----------
 
