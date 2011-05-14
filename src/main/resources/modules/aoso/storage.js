@@ -58,7 +58,7 @@ function getBaseUrl() {
     return window.contextPath;
 }
 
-function search(search, success, limit, offset, error, complete) {
+/*function search(search, success, limit, offset, error, complete) {
     limit = limit || 10;
     offset = offset || 0;
     return $.ajax({url:searchUrl(search, limit, offset),
@@ -67,11 +67,14 @@ function search(search, success, limit, offset, error, complete) {
                 error : error,
                 complete : complete
             });
-}
+}*/
 
 function search(prefix, options) {
-    var url = searchUrl(query, options['limit'] || 10, options['offset'] || 0);
-    return $.ajax(url, options);
+    var url = searchUrl(prefix, options['limit'] || 10, options['offset'] || 0);
+    options['url'] = url;
+    console.log(url);
+    console.log(options);
+    return $.ajax(options);
 }
 
 

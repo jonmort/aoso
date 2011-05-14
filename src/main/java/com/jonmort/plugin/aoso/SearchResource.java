@@ -17,7 +17,7 @@ public class SearchResource {
                         @PathParam("search") String search,
                         @QueryParam("limit") @DefaultValue("10") int limit,
                         @QueryParam("offset") @DefaultValue("0") int offset) {
-        Iterable<Storage> storage = storageService.search(scope, search, 10, 0);
+        Iterable<Storage> storage = storageService.search(scope, search, limit, offset);
         if (storage != null) {
             return Response.ok(StorageRepresentation.fromStorage(storage)).build();
         }

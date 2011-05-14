@@ -7,7 +7,14 @@ var $ = require('speakeasy/jquery').jQuery,
         storage = require('aoso/storage');
 var ts = new Date().getTime();
 var key = 'key' + ts;
-var val1, val2
+var val1, val2;
+
+function createSearchTestData() {
+    var i = 0;
+    for (i = 0; i < 10; i++) {
+        storage.setItem('search/' + ts + '/' + i, 'search' + i);
+    }
+}
 
 function runTests() {
     val1 = storage.getItem(key);
@@ -27,8 +34,9 @@ function runTests() {
                 success : function(data) {
                     console.log(data);
                     if (data.data != 'data') {
-                        alert("data.data is not data : " + data.data);
+                        alert('data.data is not data : ' + data.data);
                     }
+                    storage.remove(data.key);
                 }
             });
 
@@ -36,31 +44,62 @@ function runTests() {
                 data : 'data2' ,
                 complete : function() {
                     storage.get(key + '2', {
-                        success : function(data) {
-                            console.log(data);
-                            if (data.data != 'data2') {
-                                alert("data.data is not data2 : " + data.data);
-                            }
-                        }
-                    });
+                                success : function(data) {
+                                    console.log(data);
+                                    if (data.data != 'data2') {
+                                        alert('data.data is not data2 : ' + data.data);
+                                    }
+                                },
+                                complete : function() {
+                                    storage.remove(key + '2', {
+                                                data : 'data2' ,
+                                                complete : function() {
+                                                    storage.get(key + '2', {
+                                                                complete : function(jqXHR) {
+                                                                    console.log(jqXHR);
+                                                                    if (jqXHR.status != 404) {
+                                                                        alert('data.data should be not found');
+                                                                    }
+                                                                }
+                                                            });
+                                                }
+                                            });
+                                }
+                            });
                 }
             });
 
-    storage.remove(key + '2', {
-                data : 'data2' ,
+
+    createSearchTestData();
+
+    storage.withPrefix('search/' + ts, {
+                success : function(data) {
+                    if (data.length != 10) {
+                        alert('Expecting 10 results got: ' + data.length)
+                    }
+                    console.log(data);
+                },
                 complete : function() {
-                    storage.get(key + '2', {
-                        complete : function(jqXHR, textStatus) {
-                            console.log(jqXHR);
-                            if (jqXHR.status != 404) {
-                                alert('data.data should be not found');
-                            }
-                        }
-                    });
+                    storage.withPrefix('search/' + ts, {
+                                limit : 5,
+                                offset : 5,
+                                success : function(data) {
+                                    if (data.length != 5) {
+                                        alert('Expecting 5 results got: ' + data.length)
+                                    }
+                                    if (data[0].data != 'search5') {
+                                        alert('Expecting search5 got : ' + data[0].data);
+                                    }
+                                    console.log(data);
+
+                                    $.each(data, function(index, d) {
+                                        console.log(d);
+                                        storage.remove(d.key);
+                                    });
+                                }
+                            });
                 }
             });
-
-
 }
 
 $(document).ready(function() {

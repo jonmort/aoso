@@ -11,12 +11,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class StorageRepresentation {
     private String key;
     private String data;
+    private String scope;
 
     public StorageRepresentation() {
     }
 
-    public StorageRepresentation(String key, String data) {
+    public StorageRepresentation(String key, String scope, String data) {
         this.key = key;
+        this.scope = scope;
         this.data = data;
     }
 
@@ -41,11 +43,16 @@ public class StorageRepresentation {
 
     public static StorageRepresentation fromStorage(Storage storage) {
         String key = storage.getIdentifier();
+        String scope = null;
         if (key.startsWith("user/")) {
-            int nextSlash = key.indexOf("/", 5);
-            key = "user" + key.substring(nextSlash);
+            int nextSlash = key.indexOf("/", "user/".length());
+            key = key.substring(nextSlash + 1);
+            scope = "user";
+        } else if (key.startsWith("global/")) {
+            key = key.substring("global/".length() + 1);
+            scope = "global";
         }
-        return new StorageRepresentation(key, storage.getData());
+        return new StorageRepresentation(key, scope, storage.getData());
     }
 
     public static StorageRepresentation[] fromStorage(Iterable<Storage> storage) {

@@ -39,7 +39,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     public Iterable<Storage> search(String scope, String searchString, int noResults, int offset) {
-        String identifierRegex = String.format("%s/%s%%", scope, searchString);
+        String identifierRegex = String.format("%s%%", createIdentifierString(scope, searchString));
         Query query = Query.select().where("IDENTIFIER LIKE ?", identifierRegex)
                 .limit(noResults)
                 .offset(offset);
