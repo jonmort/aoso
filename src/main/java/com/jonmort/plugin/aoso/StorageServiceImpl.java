@@ -2,6 +2,7 @@ package com.jonmort.plugin.aoso;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.sal.api.user.UserManager;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.java.ao.Query;
 
@@ -22,12 +23,12 @@ public class StorageServiceImpl implements StorageService {
         storage.save();
     }
 
-    public Storage get(String scope, String generic, String specific, String dataid) {
-        return ao.get(Storage.class, createIdentifierString(scope, generic, specific, dataid));
+    public Storage get(String scope, String dataId) {
+        return ao.get(Storage.class, createIdentifierString(scope, dataId));
     }
 
-    public Storage create(String scope, String generic, String specific, String dataid, String data) {
-        final Storage storage = ao.create(Storage.class, ImmutableMap.of("identifier", (Object) createIdentifierString(scope, generic, specific, dataid)));
+    public Storage create(String scope, String dataId, String data) {
+        final Storage storage = ao.create(Storage.class, ImmutableMap.of("identifier", (Object) createIdentifierString(scope, dataId)));
         storage.setData(data);
         storage.save();
         return storage;
@@ -38,13 +39,18 @@ public class StorageServiceImpl implements StorageService {
     }
 
     public Iterable<Storage> search(String scope, String searchString, int noResults, int offset) {
-        return Arrays.asList(ao.find(Storage.class, Query.select().where("IDENTIFIER LIKE ?", String.format("%s/%s%%", scope, searchString)).limit(noResults).offset(offset)));
+        String identifierRegex = String.format("%s/%s%%", scope, searchString);
+        Query query = Query.select().where("IDENTIFIER LIKE ?", identifierRegex)
+                .limit(noResults)
+                .offset(offset);
+        Storage[] result = ao.find(Storage.class, query);
+        return ImmutableList.of(result);
     }
 
-    private String createIdentifierString(String scope, String generic, String specific, String dataid) {
+    private String createIdentifierString(String scope, String dataId) {
         if ("user".equals(scope)) {
-            return String.format("%s/%s/%s/%s/%s", scope, userManager.getRemoteUsername(), generic, specific, dataid);
+            return String.format("%s/%s/%s", scope, userManager.getRemoteUsername(), dataId);
         }
-        return String.format("%s/%s/%s/%s",  scope, generic, specific, dataid);
+        return String.format("%s/%s",  scope, dataId);
     }
 }

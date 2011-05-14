@@ -5,8 +5,8 @@ import com.atlassian.activeobjects.tx.Transactional;
 @Transactional
 public interface StorageService {
     void store(Storage storage);
-    Storage get(String scope, String generic, String specific, String dataid);
-    Storage create(String scope, String generic, String specific, String dataid, String data);
+    Storage get(String scope, String dataId);
+    Storage create(String scope, String dataId, String data);
     void remove(Storage storage);
     Iterable<Storage> search(String scope, String searchString, int noResults, int offset);
 }

@@ -5,7 +5,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 
-@Path("/store/{scope}/{generic}/{specific}/{dataid}")
+@Path("/store/{scope}/{dataId:.*}")
 public class StoreResource {
     private final StorageService storageService;
 
@@ -16,10 +16,8 @@ public class StoreResource {
 
     @GET
     public Response get(@PathParam("scope") String scope,
-                        @PathParam("generic") String generic,
-                        @PathParam("specific") String specific,
-                        @PathParam("dataid") String dataid) {
-        Storage storage = storageService.get(scope, generic, specific, dataid);
+                        @PathParam("dataId") String dataId) {
+        Storage storage = storageService.get(scope, dataId);
         if (storage != null) {
             return Response.ok(StorageRepresentation.fromStorage(storage)).build();
         }
@@ -28,27 +26,23 @@ public class StoreResource {
 
     @PUT
     public Response put(@PathParam("scope") String scope,
-                        @PathParam("generic") String generic,
-                        @PathParam("specific") String specific,
-                        @PathParam("dataid") String dataid,
+                        @PathParam("dataId") String dataId,
                         String data) {
-        Storage storage = storageService.get(scope, generic, specific, dataid);
+        Storage storage = storageService.get(scope, dataId);
         if (storage == null) {
-            storageService.create(scope, generic, specific, dataid, data);
+            storageService.create(scope, dataId, data);
         } else {
-            update(scope, generic, specific, dataid, data);
+            update(scope, dataId, data);
         }
-        final URI location = UriBuilder.fromResource(StoreResource.class).build(scope, generic, specific, dataid);
+        final URI location = UriBuilder.fromResource(StoreResource.class).build(scope, dataId);
         return Response.created(location).build();
     }
 
     @POST
     public Response update(@PathParam("scope") String scope,
-                           @PathParam("generic") String generic,
-                           @PathParam("specific") String specific,
-                           @PathParam("dataid") String dataid,
+                           @PathParam("dataId") String dataId,
                            String data) {
-        Storage storage = storageService.get(scope, generic, specific, dataid);
+        Storage storage = storageService.get(scope, dataId);
         if (storage != null) {
             storage.setData(data);
             storageService.store(storage);
@@ -59,10 +53,8 @@ public class StoreResource {
 
     @DELETE
     public Response remove(@PathParam("scope") String scope,
-                           @PathParam("generic") String generic,
-                           @PathParam("specific") String specific,
-                           @PathParam("dataid") String dataid) {
-        Storage storage = storageService.get(scope, generic, specific, dataid);
+                           @PathParam("dataId") String dataId) {
+        Storage storage = storageService.get(scope, dataId);
         if (storage != null) {
             storageService.remove(storage);
             return Response.ok().build();
