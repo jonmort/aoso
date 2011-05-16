@@ -13,8 +13,8 @@ Installation Instructions
 
 1. Install [Speakeasy](http://confluence.atlassian.com/display/DEVNET/Speakeasy+Install+Guide)
 2. Install [Active Objects](http://studio.atlassian.com/wiki/display/AO/Installing+Active+Objects)
-3. Download [aoso-1.0.jar](https://github.com/downloads/jonmort/aoso/aoso-1.0.jar)
-4. Upload `aoso-1.0.jar` as a plugin
+3. Download [aoso-1.0.1.jar](https://github.com/downloads/jonmort/aoso/aoso-1.0.1.jar)
+4. Upload `aoso-1.0.1.jar` as a plugin
 
 
 Usage
